@@ -55,7 +55,7 @@ public class CarControllerTest {
     @Autowired
     private MockMvc mvc;
 
-//    @Autowired
+    @Autowired
     private JacksonTester<Car> json;
 
     @MockBean
@@ -153,7 +153,7 @@ public class CarControllerTest {
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
-        
+
     }
 
     /**
