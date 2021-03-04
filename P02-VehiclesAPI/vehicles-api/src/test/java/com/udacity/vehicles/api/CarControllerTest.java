@@ -1,9 +1,12 @@
 package com.udacity.vehicles.api;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -21,6 +24,9 @@ import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.service.CarService;
 import java.net.URI;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +39,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
  * Implements testing of the CarController class.
@@ -46,7 +54,7 @@ public class CarControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
+//    @Autowired
     private JacksonTester<Car> json;
 
     @MockBean
@@ -58,6 +66,8 @@ public class CarControllerTest {
     @MockBean
     private MapsClient mapsClient;
     Car car;
+    Car gari;
+    List<Car> carList;
 
     /**
      * Creates pre-requisites for testing, such as an example car.
@@ -66,9 +76,18 @@ public class CarControllerTest {
     public void setup() {
         car = getCar();
         car.setId(1L);
+
+        gari = getCar();
+        gari.setId(2L);
+
         given(carService.save(any())).willReturn(car);
         given(carService.findById(any())).willReturn(car);
-        given(carService.list()).willReturn(Collections.singletonList(car));
+
+
+        carList= new LinkedList<>();
+        carList.add(car);
+        carList.add(gari);
+        given(carService.list()).willReturn(carList);
     }
 
     /**
@@ -97,6 +116,12 @@ public class CarControllerTest {
          *   the whole list of vehicles. This should utilize the car from `getCar()`
          *   below (the vehicle will be the first in the list).
          */
+        mvc.perform(MockMvcRequestBuilders.get("/cars"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.content().json("{}"));
+
+        verify(carService,times(1)).list();
 
     }
 
