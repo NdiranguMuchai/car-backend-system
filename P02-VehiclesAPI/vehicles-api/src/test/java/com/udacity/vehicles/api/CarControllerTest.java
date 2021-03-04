@@ -121,7 +121,7 @@ public class CarControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json("{}"));
 
-        verify(carService,times(1)).list();
+        verify(carService).list();
 
     }
 
@@ -135,6 +135,10 @@ public class CarControllerTest {
          * TODO: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        mvc.perform(MockMvcRequestBuilders.get("/cars/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        verify(carService).findById(1L);
     }
 
     /**
