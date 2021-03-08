@@ -1,20 +1,5 @@
 package com.udacity.vehicles.api;
 
-import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.Condition;
@@ -23,11 +8,6 @@ import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.Details;
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.service.CarService;
-import java.net.URI;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,8 +20,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Implements testing of the CarController class.
@@ -97,7 +87,6 @@ public class CarControllerTest {
      */
     @Test
     public void createCar() throws Exception {
-//        Car car = getCar();
         mvc.perform(
                 post(new URI("/cars"))
                         .content(json.write(car).getJson())
@@ -153,7 +142,10 @@ public class CarControllerTest {
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        mvc.perform(delete("/cars/1"))
+                .andExpect(status().isNoContent());
 
+        verify(carService).delete(anyLong());
     }
 
     /**
