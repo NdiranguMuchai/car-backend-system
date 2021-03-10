@@ -59,6 +59,7 @@ public class CarControllerTest {
     Car car;
     Car gari;
     List<Car> carList;
+    Car updatedCar;
 
     /**
      * Creates pre-requisites for testing, such as an example car.
@@ -79,6 +80,8 @@ public class CarControllerTest {
         carList.add(car);
         carList.add(gari);
         given(carService.list()).willReturn(carList);
+
+        updatedCar = getUpdatedCar();
     }
 
     /**
@@ -148,6 +151,17 @@ public class CarControllerTest {
         verify(carService).delete(anyLong());
     }
 
+    @Test
+    public void updateCar()throws Exception{
+
+        mvc.perform(put("/cars/1")
+                .content(json.write(updatedCar).getJson())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+    }
+
     /**
      * Creates an example Car object for use in testing.
      * @return an example Car object
@@ -170,5 +184,25 @@ public class CarControllerTest {
         car.setDetails(details);
         car.setCondition(Condition.USED);
         return car;
+    }
+
+    private Car getUpdatedCar() {
+        Car updatedCar = new Car();
+        updatedCar.setLocation(new Location(40.730610, -73.935242));
+        Details details = new Details();
+        Manufacturer manufacturer = new Manufacturer(787, "Pagani");
+        details.setManufacturer(manufacturer);
+        details.setModel("Zonda");
+        details.setMileage(0);
+        details.setExternalColor("black");
+        details.setBody("sedan");
+        details.setEngine("7.2L V12");
+        details.setFuelType("Gasoline");
+        details.setModelYear(2012);
+        details.setProductionYear(2012);
+        details.setNumberOfDoors(2);
+        updatedCar.setDetails(details);
+        updatedCar.setCondition(Condition.NEW);
+        return updatedCar;
     }
 }
